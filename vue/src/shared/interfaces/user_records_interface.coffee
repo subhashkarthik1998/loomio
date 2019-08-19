@@ -26,11 +26,6 @@ export default class UserRecordsInterface extends BaseRecordsInterface
   uploadAvatar: (file) =>
     @remote.upload 'upload_avatar', file
 
-  changePassword: (user) =>
-    user.processing = true
-    @remote.post('change_password', user.serialize()).finally ->
-      user.processing = false
-
   deactivate: (user) =>
     user.processing = true
     @remote.post('deactivate', user.serialize()).finally -> user.processing = false

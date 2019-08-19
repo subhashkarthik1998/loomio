@@ -18,7 +18,7 @@ class PermittedParams < Struct.new(:params)
   alias :read_attribute_for_serialization :send
 
   def user_attributes
-    [:name, :avatar_kind, :email, :password, :password_confirmation, :current_password,
+    [:name, :avatar_kind, :email,
      :remember_me, :uploaded_avatar, :username, :short_bio, :short_bio_format, :location,
      :time_zone, :selected_locale, :email_when_mentioned, :default_membership_volume,
      :email_catch_up, :deactivation_response, :has_password, :has_token, :email_status,

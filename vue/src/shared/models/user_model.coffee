@@ -134,3 +134,7 @@ export default class UserModel extends BaseModel
 
   belongsToPayingGroup: ->
     _.some @groups(), (group) -> group.subscriptionKind == 'paid'
+
+  changePassword: (password, passwordConfirmation) =>
+    @processing = true
+    @remote.post('change_password', {user: {password: password, password_confirmation: passwordConfirmation}})

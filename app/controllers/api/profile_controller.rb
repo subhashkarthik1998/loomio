@@ -34,6 +34,11 @@ class API::ProfileController < API::RestfulController
     respond_with_resource
   end
 
+  def change_password
+    service.change_password(actor: current_user, params: params.require(:user).permit([:password, :password_confirmation]))
+    respond_with_resource
+  end
+
   def set_volume
     service.set_volume(user: current_user, actor: current_user, params: params.slice(:volume, :apply_to_all))
     respond_with_resource

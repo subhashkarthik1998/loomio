@@ -91,6 +91,14 @@ class UserService
     EventBus.broadcast('user_update', user, actor, params)
   end
 
+  def self.change_password(actor:, params:)
+    actor.ability.authorize! :update, actor
+
+    if actor.update(password: params[:password], password_confirmation: params[:password_confirmation], reset_password_token: SecureRandom.hex)
+      EventBus.broadcast('change_password', actor, actor, params)
+    end
+  end
+
   def self.save_experience(user:, actor:, params:)
     actor.ability.authorize! :update, user
     user.experienced!(params[:experience])

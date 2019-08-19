@@ -1,5 +1,6 @@
 <script lang="coffee">
 import Session        from '@/shared/services/session'
+import Flash from '@/shared/services/flash'
 import Records        from '@/shared/services/records'
 import { submitForm }   from '@/shared/helpers/form'
 
@@ -10,14 +11,18 @@ export default
   data: ->
     processing: false
     submit: null
+    password: ''
+    passwordConfirmation: ''
 
   created: ->
-    @user.password = ''
-    @user.passwordConfirmation = ''
-    @submit = submitForm @, @user,
-      submitFn: Records.users.updateProfile
-      flashSuccess: "change_password_form.password_changed"
-      successCallback: => @close()
+    @submit = =>
+      success = (data) =>
+        console.log 'success', data
+
+      failure = (data) => data.json().then (data) =>
+        @user.afterSave(data)
+
+      @user.changePassword(@password, @passwordConfirmation).then success, failure
 
 </script>
 <template lang="pug">
@@ -30,10 +35,10 @@ v-card.change-password-form(@keyup.ctrl.enter="submit()" @keydown.meta.enter="su
   v-card-text
     p.lmo-hint-text(v-t="'change_password_form.set_password_helptext'")
     .change-password-form__password-container
-      v-text-field.change-password-form__password(:label="$t('sign_up_form.password_label')" required type='password' v-model='user.password')
+      v-text-field.change-password-form__password(:label="$t('sign_up_form.password_label')" required type='password' v-model='password')
       validation-errors(:subject='user', field='password')
     .change-password-form__password-confirmation-container
-      v-text-field.change-password-form__password-confirmation(:label="$t('sign_up_form.password_confirmation_label')" required='true' type='password' v-model='user.passwordConfirmation')
+      v-text-field.change-password-form__password-confirmation(:label="$t('sign_up_form.password_confirmation_label')" required='true' type='password' v-model='passwordConfirmation')
       validation-errors(:subject='user', field='passwordConfirmation')
   v-card-actions
     v-spacer
