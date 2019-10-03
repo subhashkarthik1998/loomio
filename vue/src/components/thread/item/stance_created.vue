@@ -51,7 +51,7 @@ export default
             component: 'RevisionHistoryModal'
             props:
               model: @eventable
-              
+
   beforeDestroy: ->
     delete @actions
 

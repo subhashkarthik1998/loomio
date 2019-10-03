@@ -44,7 +44,7 @@ export default
     recentSlots: []
     missingSlots: []
     slots: []
-    padding: 1
+    padding: 20
     focusedEvent: null
 
   methods:

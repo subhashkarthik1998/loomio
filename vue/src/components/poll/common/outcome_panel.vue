@@ -1,17 +1,15 @@
 <script lang="coffee">
 import OutcomeService from '@/shared/services/outcome_service'
-import { listenForTranslations } from '@/shared/helpers/listen'
 
 export default
   props:
     poll: Object
 
-  mounted: ->
-    listenForTranslations(@)
+  created: ->
 
   computed:
+    actions: -> OutcomeService.actions(@outcome)
     outcome: -> @poll.outcome()
-    actions: -> OutcomeService.actions(@outcome, @)
 
 </script>
 
