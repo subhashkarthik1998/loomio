@@ -5,6 +5,8 @@ import RecordLoader from '@/shared/services/record_loader'
 import { debounce, first, last } from 'lodash'
 
 export default
+  components:
+    ThreadRenderer: -> import('@/components/thread/renderer.vue')
   props:
     parentEvent: Object
     discussion: Object

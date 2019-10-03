@@ -6,6 +6,7 @@ import RecordLoader from '@/shared/services/record_loader'
 import EventHeights from '@/shared/services/event_heights'
 
 export default
+  name: 'thread-renderer'
   props:
     discussion: Object
     parentEvent: Object
@@ -43,7 +44,7 @@ export default
     recentSlots: []
     missingSlots: []
     slots: []
-    padding: 20
+    padding: 1
     focusedEvent: null
 
   methods:
@@ -70,10 +71,10 @@ export default
         firstSlot = firstRendered = 1
         lastSlot = lastRendered = @parentEvent.childCount
 
-      eventsBySlot = {}
+      @eventsBySlot = {}
 
       for i in [firstSlot..lastSlot]
-        eventsBySlot[i] = null
+        @eventsBySlot[i] = null
 
       presentPositions = []
       Records.events.collection.chain().
@@ -82,10 +83,9 @@ export default
       simplesort('position').
       data().forEach (event) =>
         presentPositions.push(event.position)
-        eventsBySlot[event.position] = event
+        @eventsBySlot[event.position] = event
 
       expectedPositions = range(firstRendered, lastRendered+1)
-      @eventsBySlot = eventsBySlot
       @missingSlots = difference(expectedPositions, presentPositions)
       @eventsBySlot[@focusedEvent.position] = @focusedEvent if @focusedEvent
 
@@ -118,6 +118,7 @@ export default
 <template lang="pug">
 .thread-renderer
   .thread-item-slot(v-for="slot in slots" :id="'position-'+slot" :key="slot" v-observe-visibility="{callback: (isVisible) => slotVisible(isVisible, slot)}" )
+    //- h1.my-8 slot {{slot}}
     thread-item-wrapper(:parent-id="parentEvent.id" :event="eventsBySlot[slot]" :position="parseInt(slot)")
   //- div
     | depth {{parentEvent.depth}}

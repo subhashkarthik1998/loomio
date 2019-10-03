@@ -20,5 +20,3 @@ export default class Flash
   @loading: createFlashLevel 'loading', 1
   @update:  createFlashLevel 'update', 1
   @dismiss: createFlashLevel 'loading', 1
-
-window.Loomio.flash = Flash

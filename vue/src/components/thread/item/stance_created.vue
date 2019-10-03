@@ -3,20 +3,20 @@ import Session        from '@/shared/services/session'
 import AbilityService from '@/shared/services/ability_service'
 import openModal from '@/shared/helpers/open_modal'
 
-import { listenForTranslations } from '@/shared/helpers/listen'
-
 export default
   components:
     ThreadItem: -> import('@/components/thread/item.vue')
 
   props:
     event: Object
+
+  data: ->
+    eventable: @event.model()
+
   computed:
-    eventable: -> @event.model()
     choiceInHeadline: ->
       @eventable.poll().hasOptionIcons() &&
       @eventable.stanceChoices().length == 1
-    canEdit: ->
 
     componentType:  ->
       if @event.actor()
@@ -35,6 +35,7 @@ export default
             component: 'PollCommonEditVoteModal',
             props:
               stance: @eventable.clone()
+
       translate_stance:
         icon: 'mdi-translate'
         canPerform: =>
@@ -50,8 +51,10 @@ export default
             component: 'RevisionHistoryModal'
             props:
               model: @eventable
-  # mounted: ->
-  #   listenForTranslations($scope)
+              
+  beforeDestroy: ->
+    delete @actions
+
 </script>
 
 <template lang="pug">

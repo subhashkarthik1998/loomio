@@ -1,8 +1,6 @@
 <script lang="coffee">
 import OutcomeService from '@/shared/services/outcome_service'
 import EventService from '@/shared/services/event_service'
-
-import { listenForTranslations } from '@/shared/helpers/listen'
 import { pick } from 'lodash'
 
 export default
@@ -12,16 +10,17 @@ export default
   props:
     event: Object
 
-  mounted: ->
-    listenForTranslations(@)
+  data: ->
+    eventable: @event.model()
 
-  computed:
-    eventable: -> @event.model()
-    poll: -> @eventable.poll()
-    dockActions: ->
-      OutcomeService.actions(@eventable, @)
-    menuActions: ->
-      pick EventService.actions(@event, @), ['pin_event', 'unpin_event', 'notification_history']
+  created: ->
+    @dockActions = OutcomeService.actions(@eventable, @)
+    @menuActions = pick EventService.actions(@event, @), ['pin_event', 'unpin_event', 'notification_history']
+
+  beforeDestroy: ->
+    delete @dockActions
+    delete @menuActions
+
 
 </script>
 

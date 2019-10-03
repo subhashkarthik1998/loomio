@@ -34,8 +34,8 @@ export default
         {height: (EventHeights[@parentId] && EventHeights[@parentId][@position] || 200)+'px'}
 
   watch:
-    event: ->
-      if @event
+    event: (val) ->
+      if val
         @$nextTick =>
           return unless @$refs.item
           EventHeights[@parentId] = {} unless EventHeights[@parentId]

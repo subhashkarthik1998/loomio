@@ -9,13 +9,10 @@ import EventService from '@/shared/services/event_service'
 import { myLastStanceFor }  from '@/shared/helpers/poll'
 import { pick, assign } from 'lodash'
 
-import { listenForTranslations } from '@/shared/helpers/listen'
-
 export default
   components:
     ThreadItem: -> import('@/components/thread/item.vue')
-
-  mixins: [PollModalMixin, WatchRecords]
+  mixins: [PollModalMixin]
   props:
     event: Object
 
@@ -27,28 +24,31 @@ export default
       query: (records) =>
         @myLastStance = myLastStanceFor(@poll)?
 
-  data: ->
-    buttonPressed: false
-    myLastStance: null
-
-  computed:
-    eventable: -> @event.model()
-    poll: -> @eventable
-
-    showResults: ->
-      @buttonPressed || @myLastStance || @poll.isClosed()
-
-    menuActions: ->
+    @menuActions =
       assign(
         pick PollService.actions(@poll, @), ['show_history', 'notification_history', 'close_poll', 'reopen_poll', 'export_poll', 'delete_poll', 'translate_poll']
       ,
         pick EventService.actions(@event, @), ['pin_event', 'unpin_event']
       )
-    dockActions: ->
-      pick PollService.actions(@poll, @), ['announce_poll', 'edit_poll']
 
-  mounted: ->
-    listenForTranslations @
+    @dockActions = pick PollService.actions(@poll, @), ['announce_poll', 'edit_poll']
+
+  beforeDestroy: ->
+    EventBus.$off 'showResults'
+    EventBus.$off 'stanceSaved'
+    delete @dockActions
+    delete @menuActions
+
+
+  data: ->
+    buttonPressed: false
+    myLastStance: null
+    poll: @event.model()
+
+  computed:
+    showResults: ->
+      @buttonPressed || @myLastStance || @poll.isClosed()
+
 </script>
 
 <template lang="pug">
@@ -64,11 +64,11 @@ thread-item.poll-created(:event="event")
   attachment-list(:attachments="poll.attachments")
   document-list(:model='poll' skip-fetch)
   p.caption(v-if="!poll.pollOptionNames.length" v-t="'poll_common.no_voting'")
-  div(v-if="poll.pollOptionNames.length")
-    .poll-common-card__results-shown(v-if='showResults')
-      poll-common-directive(:poll='poll', name='chart-panel')
-      poll-common-percent-voted(:poll='poll')
-    poll-common-action-panel(:poll='poll')
+  //- div(v-if="poll.pollOptionNames.length")
+  //-   .poll-common-card__results-shown(v-if='showResults')
+  //-     poll-common-directive(:poll='poll', name='chart-panel')
+  //-     poll-common-percent-voted(:poll='poll')
+  //-   poll-common-action-panel(:poll='poll')
   template(v-slot:actions)
     v-layout.my-2(align-center)
       action-dock(:actions="dockActions")

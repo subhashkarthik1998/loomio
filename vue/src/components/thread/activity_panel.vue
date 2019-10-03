@@ -8,10 +8,13 @@ import AbilityService           from '@/shared/services/ability_service'
 import Session from '@/shared/services/session'
 import Records from '@/shared/services/records'
 import { print } from '@/shared/helpers/window'
+import ThreadRenderer from '@/components/thread/renderer'
 
 import { compact, snakeCase, camelCase, min, max, map, first, last, without, uniq, throttle, debounce, range, difference, isNumber, isEqual } from 'lodash'
 
 export default
+  components:
+    ThreadRenderer: ThreadRenderer
   props:
     discussion: Object
     viewportIsBelow: Boolean

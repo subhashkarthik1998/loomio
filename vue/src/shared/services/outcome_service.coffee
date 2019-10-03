@@ -4,11 +4,9 @@ import Records from '@/shared/services/records'
 import Session from '@/shared/services/session'
 
 export default new class OutcomeService
-  actions: (outcome, vm) ->
-    poll = outcome.poll()
-
+  actions: (outcome) ->
     react:
-      canPerform: -> AbilityService.canReactToPoll(poll)
+      canPerform: -> AbilityService.canReactToPoll(outcome.poll())
 
     notification_history:
       name: 'action_dock.notification_history'
@@ -23,16 +21,16 @@ export default new class OutcomeService
     announce_outcome:
       icon: 'mdi-send'
       active: -> outcome.announcementsCount == 0
-      canPerform: -> AbilityService.canSetPollOutcome(poll)
+      canPerform: -> AbilityService.canSetPollOutcome(outcome.poll())
       perform: ->
         openModal
           component: 'AnnouncementForm'
           props:
-            announcement: Records.announcements.buildFromModel(outcome)
+            announcement: Records.announcements.buildFromModel(outcome.poll())
 
     edit_outcome:
       icon: 'mdi-pencil'
-      canPerform: -> AbilityService.canSetPollOutcome(poll)
+      canPerform: -> AbilityService.canSetPollOutcome(outcome.poll())
       perform: ->
         openModal
           component: 'PollCommonOutcomeModal',
